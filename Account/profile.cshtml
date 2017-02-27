@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+     var db = Database.Open("StarterSite");
+    var id=""; 
+    
+       var mquery = "SELECT * FROM Bids WHERE UserID=@0";
+    
+     if (WebSecurity.IsAuthenticated) 
+        {
+          id= @WebSecurity.CurrentUserName;                
+       
+        }
+    
+             var msingle = db.Query(mquery,id);
+
+    
+    
+    
+}
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+         
+        @if (WebSecurity.IsAuthenticated) {
+                        <p>
+                           <b> Welcome</b><i><u> @WebSecurity.CurrentUserName</u></i> !
+                           
+                        </p>
+                    }
+        <b><p>This is Your Personal Web Page </p></b><br/>
+        <table border="1" width="50%"> 
+<tr>
+    <th>Bid</th> 
+<th>Project ID</th> 
+ <th>Messages</th> 
+
+</tr>
+    
+@foreach(var row in msingle)
+{
+    
+<tr>
+    
+ <td>@row.Bids</td>
+    <td>@row.ProjectID</td>
+     <td>@row.Message</td>
+ 
+ </tr>
+}
+
+</tr> 
+</table> 
+
+        </body>
+    </html>

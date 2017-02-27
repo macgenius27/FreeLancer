@@ -1,0 +1,127 @@
+﻿@{
+    // Set the layout page and page title
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Post a Project";
+
+    // Initialize general page variables
+    var id="";
+    var proj="";
+    var proj_type = "";
+    var skills="";
+    var started="";
+    var ends="";
+    var descrip="";
+    var Budget="";
+
+    // Validation
+    var isValid = true;
+    var projErrorMessage = "";
+    var Project_Creation_ErrorMessage = "";
+
+
+    // If this is a POST request, validate and process data
+    if (IsPost) {
+        id = Request.Form["id"];
+        proj = Request.Form["proj"];
+           Budget = Request["Budget"];
+        descrip = Request.Form["descrip"];
+        proj_type = Request.Form["proj_type"];
+        skills = Request.Form["skills"];
+        started = Request.Form["started"];
+        ends = Request.Form["ends"];
+
+   
+        // Validate the project 
+        if (proj.IsEmpty()) {
+            projErrorMessage = "You must Enter a Project Name.";
+            isValid = false;
+        }
+ if (WebSecurity.IsAuthenticated) 
+        {
+         var UserID= @WebSecurity.CurrentUserName;        
+        // If all information is valid, post a new project
+        if (isValid) { 
+            // Insert a new project into the database
+            var db = Database.Open("StarterSite");
+
+            // Check if project is already exists
+            var pro = db.QuerySingle("SELECT ProjectName FROM Projects WHERE LOWER(ProjectName) = LOWER(@0)", proj);
+            if (pro == null) {
+            // Insert project into the project table
+                db.Execute("INSERT INTO Projects (id,ProjectName,Description,Type,skills,started,Budget,Ends,UserID) VALUES (@0,@1,@2,@3,@4,@5,@6,@7,@8)" ,id,proj,descrip,proj_type,skills,started,Budget,ends,UserID);
+                Response.Redirect(@Href("~/Account/postsucces"));
+                // Create and associate a new entry in the membership database.
+                // If successful, continue processing the request
+            }
+            else {
+                // User already exists
+                isValid = false;
+                Project_Creation_ErrorMessage = "Project is already in Progress.";
+            }
+        }    
+    }
+}
+}
+   
+        <form method="post" action="">
+    <fieldset>
+        <legend>Project Posting  Form</legend>
+        <ol>
+            <li class="id">
+                <label for="id">Project ID:</label>
+                <input type="id" id="id" name="id" title="id"/> 
+               
+                
+            </li>
+            <li class="proj">
+                <label for="proj">project Name:</label>
+                <input type="text" id="proj" name="proj" title="Project Name" value="@proj" @if(!projErrorMessage.IsEmpty()){<text>class="error-field"</text>} />
+                @* Write any proj validation errors to the page *@
+                @if (!projErrorMessage.IsEmpty()) {
+                    <label for="proj" class="validation-error">@projErrorMessage</label>
+                }
+            </li>
+             <li class="descrip">
+                <label for="descrip">Description and Details about Project:</label>
+                <input type="descrip" id="descrip" name="descrip" title="descrip"/> 
+               
+                
+            </li>
+            <li class="proj_type">
+                <label for="proj_type">Type:</label>
+                <input type="proj_type" id="proj_type" name="proj_type" title="Type"/> 
+               
+                
+            </li>
+            <li class="skills">
+                <label for="skills">Skills:</label>
+                <input type="skills" id="skills" name="skills" title="Skills"/> 
+               
+                
+            </li>
+            <li class="started">
+                <label for="started">Started:</label>
+                <input type="started" id="started" name="started" title="Satarted"/> 
+               
+                
+            </li>
+             <li class="Budget">
+                <label for="Budget">Budget:</label>
+                <input type="Budget" id="Budget" name="Budget" title="Budget"/> 
+               
+                
+            </li>
+            <li class="ends">
+                <label for="ends">End Date:</label>
+                <input type="ends" id="ends"  name="ends" title="End"/> 
+               
+                
+            </li>
+           
+        </ol>
+        <p class="form-actions">
+            <input type="submit" value="Post" title="Post" />
+        </p>
+    </fieldset>
+</form>
+   

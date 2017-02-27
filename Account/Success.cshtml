@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+        var db = Database.Open("StarterSite");
+    var query = "SELECT * FROM Bids WHERE ProjectID=@0";
+      var id  = UrlData[0];
+     var row1 = db.Query(query,id);
+   var myID="";
+    if (WebSecurity.IsAuthenticated) 
+        {
+          myID= @WebSecurity.CurrentUserName;                
+       
+        }
+}
+
+
+<html>
+    <body>
+      <h3><b><a>You have Succesfully Bid on the Project: </a></b> </h3> 
+       <table border="1" width="30%"> 
+      <tr>
+<th>Messages</th> 
+<th>User Name</th> 
+       
+</tr>
+@foreach(var row in row1)
+{
+          
+ <tr>
+ <td>@row.Message</td>
+ 
+ <td>@myID</td>
+ </tr>
+        
+ }
+   </table>    
+    </body>
+</html>

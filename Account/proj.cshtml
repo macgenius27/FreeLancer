@@ -1,0 +1,50 @@
+﻿@{
+        Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "All Projects";
+// Insert a new project into the database
+            var db = Database.Open("StarterSite");
+          
+var query = "SELECT * FROM Projects"; 
+
+
+
+
+}
+
+<html> 
+<body> 
+<table border="1" width="100%"> 
+<tr>
+    <th>Project ID</th> 
+<th>Project</th> 
+<th>Project Type</th> 
+<th>Bids</th>
+<th>Average_bid</th>
+<th>Skills</th> 
+<th>Project Starting</th> 
+<th>Project End</th> 
+</tr>
+    
+@foreach(var row in db.Query(query))
+{
+    
+<tr>
+    <td>@row.id</td>
+<td><a href="@Href("~/Account/newbid",row.id)">@row.ProjectName</a></td> 
+    
+    <td>@row.Type</td> 
+    <td>@row.Bids</td>
+    <td>@row.Avrage_bid</td> 
+    <td>@row.skills</td> 
+    <td>@row.Started</td> 
+    <td>@row.Ends</td> 
+
+ </tr>
+}
+
+</tr> 
+</table> 
+
+    
+</body> 
+</html> 

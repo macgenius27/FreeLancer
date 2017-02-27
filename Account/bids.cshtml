@@ -1,0 +1,78 @@
+﻿@{
+     Layout = "~/_SiteLayout.cshtml";
+    var db = Database.Open("StarterSite");
+    var selectQueryString = "SELECT * FROM Projects WHERE id=@0";
+
+    var id  = UrlData[0];
+
+    if (id.IsEmpty()) {
+         Response.Redirect(@Href("~/Account/temp"));
+     }
+
+    var row = db.QuerySingle(selectQueryString, id);
+    var Bids = row.Bids;
+
+    
+    var Description=row.Description;
+
+    if (IsPost) {
+         Bids = Request["Bids"];
+         if (String.IsNullOrEmpty(Bids)) {
+           ModelState.AddError("Bids", "You Must Bid on this Project.");
+         }
+
+       
+
+        if(ModelState.IsValid) {
+            var updateQueryString =
+              "UPDATE Projects SET Bids=@0 WHERE id=@1" ;
+          
+            db.Execute(updateQueryString,Bids,id);
+            Response.Redirect(@Href("~/Account/hami"));
+         
+   
+        }
+      
+    
+  }
+  
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Details</title>
+    <style type="text/css">
+       label { float: left; width: 8em; text-align: right;
+                margin-right: 0.5em;}
+       fieldset { padding: 1em; border: 1px solid; width: 35em;}
+       legend { padding: 2px 4px;  border: 1px solid; font-weight: bold;}
+       .validation-summary-errors {font-weight:bold; color:red; font-size:11pt;}
+    </style>
+</head>
+<body>
+    <h1>Project Details</h1>
+
+    @Html.ValidationSummary("Errors with your submission:")
+
+    <form method="post" action="">
+        <fieldset>
+            <legend>Bid on this Project</legend>
+            <div>
+                <b><label>Description: </label></b>
+                <b><p>@row.Description</p></b><br/>
+            </div>
+            <div>
+                <label>BID:</label>
+                <input name="Bids" type="text" value="@Bids" />
+            </div>
+            
+            <div>
+                <label>&nbsp;</label>
+                <input type="submit" value="Bid" class="submit" />
+            </div>
+          
+        </fieldset>
+    </form>
+</body>
+</html>

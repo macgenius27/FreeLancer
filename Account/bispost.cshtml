@@ -1,0 +1,29 @@
+﻿@{
+     Layout = "~/_SiteLayout.cshtml";
+    var db = Database.Open("StarterSite");
+    var selectQueryString = "SELECT * FROM Projects WHERE id=@0";
+    var id  = UrlData[0];
+    if (id.IsEmpty()) {
+         Response.Redirect(@Href("~/Account/temp"));
+     }
+
+    var row = db.QuerySingle(selectQueryString, id);
+    var Description=row.Description;
+    if (IsPost) {
+         Bids = Request["Bids"];
+         if (String.IsNullOrEmpty(Bids)) {
+           ModelState.AddError("Bids", "You Must Bid on this Project.");
+         }
+
+       
+
+        if(ModelState.IsValid) {
+            var updateQueryString = "UPDATE Projects SET Bids=@0 WHERE id=@1" ;
+           var num2=Bids;
+            db.Execute(updateQueryString,Bids,id);
+            Response.Redirect(@Href("~/Account/hami"));
+         
+   
+        }
+  }
+}
